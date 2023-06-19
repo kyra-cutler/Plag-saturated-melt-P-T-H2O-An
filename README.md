@@ -6,7 +6,7 @@ To get started:
 
 1) Click on the green code button and download zip file. Do not remove or delete any files within this folder.
 
-2) Enter your normalised glass compositional data into the INPUT.xlsx spreadsheet. All oxide columns must be filled or entered with zero. 
+2) Enter your normalised glass compositional data into the INPUT.xlsx spreadsheet. All oxide (wt.%) columns must be filled or entered with zero. 
 
 3) Open the P_T_H2O_An.R script and follow the comments.  Within the script, you can also:
 - check whether your glass compositions are within the calibration ranges of the models.
