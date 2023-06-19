@@ -16,7 +16,9 @@ To get started:
 
 4) If you want to propagate the temperature and water content errors when using the T-dependent hygrometer and H2O-dependent barometer, open the T and H2O error propagation.R script.
  
-5) If you want test using a range of water contents with the H2O-dependent barometer, then open up the H2O content range for barometer.R script. 
+5) If you want test using a range of water contents with the H2O-dependent barometer, then open up the H2O content range for barometer.R script.
 
-Any questions, email: kyra.cutler@stx.ox.ac.uk  
+6) All estimates will be saved as Excel file (.xlsx). The file will contain the original input data + the calculated parameter (P-T-H2O-An). 
+
+Any questions, please email: kyra.cutler@stx.ox.ac.uk  
 
