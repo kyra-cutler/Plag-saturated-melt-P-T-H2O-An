@@ -28,12 +28,11 @@ library(ggpubr)
 # Set file pathway and load input data
 setwd(paste(dirname(rstudioapi::getActiveDocumentContext()$path)))
 inputdata <- read_excel("INPUT.xlsx")
-#inputdata[is.na(inputdata)] <- 0
 INPUT <- as.data.frame (inputdata)
 # Checks first rows of data 
 head(INPUT)
 
-# Check if liquid data is within calibration range 
+# Check if glass compositions are within the models' calibration range 
 # Change sheet name to "Input for P" for pressure calibration comparison
 calibration_data <- read_excel("Supplementary Table 1_calibration dataset_P-T-H2O-An.xlsx", sheet = "Input for T, H2O & An")
 Alkalis <- INPUT$Na2O_liq + INPUT$K2O_liq 
@@ -41,6 +40,7 @@ INPUT_calibrationcheck <- cbind(INPUT,Alkalis,Data="new_data")
 calibration_data <- calibration_data[ -c(11:24)]
 INPUT_calibrationcheck <- INPUT_calibrationcheck[ -c(11,12)]
 calibration_data <- rbind(calibration_data, INPUT_calibrationcheck)
+
 # TAS diagram comparison 
 ggplot(calibration_data, aes(x=SiO2_liq, y=Alkalis,colour=Data,shape=Data)) +
   geom_point(size=5, stroke=0.5)+
@@ -51,6 +51,7 @@ ggplot(calibration_data, aes(x=SiO2_liq, y=Alkalis,colour=Data,shape=Data)) +
   ylim(0,15)+
   ylab("Na2O + K2O (wt.%)")+
   theme(legend.position="bottom")
+
 # Change x and y axis to compare different oxides (SiO2_liq, TiO2,liq, Al2O3_liq, FeOt_liq, MgO_liq, CaO_liq,Na2O_liq, K2O_liq, Alkalis)
 ggplot(calibration_data, aes(x=SiO2_liq, y=Al2O3_liq,colour=Data,shape=Data)) +
   geom_point(size=5, stroke=0.5)+
