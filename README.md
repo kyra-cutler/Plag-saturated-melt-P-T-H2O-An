@@ -4,7 +4,7 @@ These R scripts allow users to obtain estimates of pre-eruptive storage conditio
 
 To get started: 
 
-1) Download the ‘plag-saturated-liquid-hygrothermobarometry’ folder. 
+1) Click on the green code button and download zip file. Do not remove or delete any files within this folder.
 
 2) Enter your normalised glass compositional data into the INPUT.xlsx spreadsheet. All oxide columns must be filled or entered with zero. 
 
