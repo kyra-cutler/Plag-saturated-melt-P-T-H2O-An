@@ -8,7 +8,7 @@ To get started:
 
 2) Enter your normalised glass compositional data into the INPUT.xlsx spreadsheet. All oxide (wt.%) columns must be filled or entered with zero. 
 
-3) Open the P_T_H2O_An.R script and follow the comments.  Within the script, you can also:
+3) Open the P_T_H2O_An.R script and follow the comments to attain P-T-H2O-An esimates.  Within the script, you can also:
 - check whether your glass compositions are within the calibration ranges of the models.
 - check whether your glass compositions represent plagioclase-saturated liquids.
 - use independent T and H2O estimates/measurements as inputs for the H2O-dependent thermometer, T-dependent hygrometer and H2O-dependent barometer. 
