@@ -1,6 +1,6 @@
-# Plagioclase-saturated liquid hygrothermobarometry and plagioclase-liquid equilibria using machine learning 
+# Plagioclase-saturated melt hygrothermobarometry and plagioclase-melt equilibria using machine learning 
 
-These R scripts allow users to obtain estimates of pre-eruptive storage conditions (P-T-H2O-An) using plagioclase-saturated liquids. Users must have R (https://www.r-project.org/) and R studio (https://www.rstudio.com/products/rstudio/) installed to run the code, as well as have a version of Excel that can open .xlsx files.
+These R scripts allow users to check the equilibrium of plagioclase crystals and obtain estimates of the last-equilibrated P-T-H2O conditions of plagioclase-saturated magmas. Users must have R (https://www.r-project.org/) and R studio (https://www.rstudio.com/products/rstudio/) installed to run the code, as well as have a version of Excel that can open .xlsx files.
 
 To get started: 
 
