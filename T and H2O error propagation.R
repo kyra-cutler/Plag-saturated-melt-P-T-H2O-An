@@ -1,5 +1,5 @@
 # T error propagation for the hygrometer + H2O error propagation for the barometer 
-# Kyra Cutler: last updated 18/06/23 
+# Kyra Cutler: last updated 25/08/23 
 # Note: units are MPa for P, degrees Celsius for T & wt.% for H2O 
 
 #--------------------(1) R ENVIRONMENT + DATA INPUT PREP-----------------------#
@@ -36,7 +36,7 @@ head(INPUT)
 
 #----------------------------(2) LIQUID THERMOMETRY----------------------------#
 # Isolating the model predictors
-dropcolumns <- c("Ref","Sample","H2O","T","plag_sat_check","Data")
+dropcolumns <- c("Ref","Sample","H2O","T","plag_sat_check","Type")
 INPUT = inputdata[,!(names(inputdata) %in% dropcolumns)]
 INPUT
 
@@ -135,17 +135,21 @@ OUTPUT2 <- cbind(allinputdata,errorprop_H2Oliq_median,errorprop_H2Oliq_sd,
                  errorprop_Pliq_median,errorprop_Pliq_sd)
 write_xlsx(OUTPUT2,"eruption_errorprop.xlsx")
 
-# Set up filters (currently removes values above 75th percentile for P-T and values above 50th percentile for H2O)
+# Set up filters (currently removes values above 75th quantile for P-T-An and values above 50th quantile for H2O)
 T_quantile <- quantile(Tliq_sd, c(0.75)) 
 H2O_quantile <- quantile(H2Oliq_sd, c(0.5)) 
 errorprop_H2O_quantile <- quantile(errorprop_H2Oliq_sd, c(0.5)) 
 errorprop_P_quantile <- quantile(errorprop_Pliq_sd, c(0.75)) 
 
-# Filter all estimates
+# Filter all estimates (take out # to include models or add in # to remove unused models)
 filtered_OUTPUT2 <- OUTPUT2 %>% mutate (Tliq_median = replace(Tliq_median, Tliq_sd >=T_quantile,NA),
-                                    H2Oliq_median = replace(H2Oliq_median, H2Oliq_sd >=H2O_quantile,NA),
-                                    errorprop_H2Oliq_median = replace(errorprop_H2Oliq_median, errorprop_H2Oliq_sd >=errorprop_H2O_quantile,NA),
-                                    errorprop_Pliq_median = replace(errorprop_Pliq_median, errorprop_Pliq_sd >=errorprop_P_quantile, NA))
+                                        Tliq_sd = replace(Tliq_sd, Tliq_sd >= T_quantile,NA),
+                                        H2Oliq_median = replace(H2Oliq_median, H2Oliq_sd >=H2O_quantile,NA),
+                                        H2Oliq_sd = replace(H2Oliq_sd, H2Oliq_sd >= H2O_quantile,NA),
+                                        errorprop_H2Oliq_median = replace(errorprop_H2Oliq_median, errorprop_H2Oliq_sd >=errorprop_H2O_quantile,NA),
+                                        errorprop_H2Oliq_sd = replace(errorprop_H2Oliq_sd, errorprop_H2Oliq_sd >=errorprop_H2O_quantile,NA),
+                                        errorprop_Pliq_median = replace(errorprop_Pliq_median, errorprop_Pliq_sd >=errorprop_P_quantile, NA),
+                                        errorprop_Pliq_sd = replace(errorprop_Pliq_sd, errorprop_Pliq_sd >=errorprop_P_quantile, NA))
                                   
                                   
 # Save filtered file
