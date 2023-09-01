@@ -20,7 +20,7 @@ All estimates will be saved as an Excel file (.xlsx). The file will contain the 
 
 Error propagation of T or H2O:
 
-If you want to propagate the temperature and water content errors when using the T-dependent hygrometer and H2O-dependent barometer, open up the ‘T and H2O error propagation.R’ script. Do not clear your global environment, as you can combine the output from the ‘P_T_H2O_An.R’ script with the output from the ‘T and H2O error propagation.R’ script.
+If you want to propagate the temperature and water content errors when using the T-dependent hygrometer and H2O-dependent barometer, open up the ‘T and H2O error propagation.R’ script. Do not clear your global environment, as you can use the calculated temperature and water estimates from the P_T_H2O_An.R script to simulate new T and H2O values. 
 
 Testing a range of water contents:
 
