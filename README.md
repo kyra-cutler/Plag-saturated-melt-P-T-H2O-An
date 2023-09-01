@@ -11,14 +11,20 @@ To get started:
 3) Open the P_T_H2O_An.R script and follow the comments to attain P-T-H2O-An esimates.  Within the script, you can also:
 - check whether your glass compositions are within the calibration ranges of the models.
 - check whether your glass compositions represent plagioclase-saturated liquids.
-- use independent T and H2O estimates/measurements as inputs for the H2O-dependent thermometer, T-dependent hygrometer and H2O-dependent barometer. 
-- filter P-T-H2O-An estimates based on the standard deviation (i.e., removing values above the 75th quartile for the P-T-An models or above the 50th quartile for the H2O models).
 
-4) If you want to propagate the temperature and water content errors when using the T-dependent hygrometer and H2O-dependent barometer, open the T and H2O error propagation.R script.
- 
-5) If you want test using a range of water contents with the H2O-dependent barometer, then open up the H2O content range for barometer.R script.
+ --> Section 3 in the script should be run first to obtain predictions of equilibrium plagioclase compositions that can be compared to your plagioclase EPMA analyses. Sections 4, 5 and 6 in the ‘P-T-H2O-An.R’ script allow you to obtain temperature, water content and pressure predictions. If you want to use the T or H2O-dependent models, check the comments to ensure you have added all the input parameters for the model you want to run.
 
-6) All estimates will be saved as Excel file (.xlsx). The file will contain the original input data + the calculated parameter (P-T-H2O-An). 
+Filtering and saving estimates:
+
+All estimates will be saved as an Excel file (.xlsx). The file will contain the original input data + the calculated parameters (P-T-H2O-An). You can filter the P-T-H2O-An estimates by removing the highest standard deviation values (i.e., currently set up to remove values above the 75th quartile for the P-T-An models or above the 50th quartile for the H2O models; feel free to change).
+
+Error propagation of T or H2O:
+
+If you want to propagate the temperature and water content errors when using the T-dependent hygrometer and H2O-dependent barometer, open up the ‘T and H2O error propagation.R’ script. Do not clear your global environment, as you can combine the output from the ‘P_T_H2O_An.R’ script with the output from the ‘T and H2O error propagation.R’ script.
+
+Testing a range of water contents:
+
+If you want to test using a range of water contents with the H2O-dependent thermometer or barometer, then open up the ‘H2O content range.R’ script. Again, do not clear your global environment, as you can combine the output from the ‘P_T_H2O_An.R’ script with the output from the ‘H2O content range.R’ script.
 
 Any questions, please email: kyra.cutler@stx.ox.ac.uk  
 
