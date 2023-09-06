@@ -8,11 +8,7 @@ To get started:
 
 2) Enter your normalised glass compositional data into the INPUT.xlsx spreadsheet. All oxide (wt.%) columns must be filled or entered with zero. 
 
-3) Open the P_T_H2O_An.R script and follow the comments to attain P-T-H2O-An esimates.  Within the script, you can also:
-- check whether your glass compositions are within the calibration ranges of the models.
-- check whether your glass compositions represent plagioclase-saturated liquids.
-
- Section 3 in the script should be run first to obtain predictions of equilibrium plagioclase compositions that can be compared to your plagioclase EPMA analyses. Sections 4, 5 and 6 in the ‘P-T-H2O-An.R’ script allow you to obtain temperature, water content and pressure predictions. If you want to use the T or H2O-dependent models, check the comments to ensure you have added all the input parameters for the model you want to run.
+3) Open the P_T_H2O_An.R script and follow the comments to attain P-T-H2O-An esimates.  Within the script, Section 1 enables you to set up your R environment and check whether your glass compositions are within the calibration ranges of the models. Section 2 allows you to check whether your glass compositions represent plagioclase-saturated liquids. Section 3 in the script gives predictions of equilibrium plagioclase compositions that can be compared to your plagioclase EPMA analyses. Sections 4, 5 and 6 allow you to obtain temperature, water content and pressure predictions. If you want to use the T or H2O-dependent models, check the comments to ensure you have added all the input parameters for the model you want to run.
 
 Filtering and saving estimates:
 
