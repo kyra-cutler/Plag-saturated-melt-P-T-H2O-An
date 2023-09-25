@@ -1,13 +1,9 @@
 # T error propagation for the hygrometer + H2O error propagation for the barometer 
-# Kyra Cutler: last updated 25/08/23 
+# Kyra Cutler: last updated 25/09/23 
 # Note: units are MPa for P, degrees Celsius for T & wt.% for H2O 
 
 #--------------------(1) R ENVIRONMENT + DATA INPUT PREP-----------------------#
-# Install packages if required (Note: ExtraTrees package is now archived) 
-url <- "https://cran.r-project.org/src/contrib/Archive/extraTrees/extraTrees_1.0.5.tar.gz"
-pkgFile <- "extraTrees_1.0.5.tar.gz"
-download.file(url = url, destfile = pkgFile)
-install.packages(pkgs=pkgFile, type="source", repos=NULL)
+# Install packages if required
 install.packages("writexl")
 install.packages("readxl")
 install.packages("gdata")
@@ -15,11 +11,12 @@ install.packages("dplyr")
 install.packages("rstudioapi")
 install.packages("ggplot2")
 install.packages("ggpubr")
+install.packages("ranger")
 
 # Run required libraries for this script 
-library(extraTrees)
 library(writexl) 
 library(gdata)
+library(ranger)
 library(dplyr)
 library(readxl)
 library(ggplot2)
@@ -36,15 +33,16 @@ head(INPUT)
 
 #----------------------------(2) LIQUID THERMOMETRY----------------------------#
 # Isolating the model predictors
-dropcolumns <- c("Ref","Sample","H2O","T","plag_sat_check","Type")
+dropcolumns <- c("Ref","Sample","H2O","T","prediction","Type")
 INPUT = inputdata[,!(names(inputdata) %in% dropcolumns)]
 INPUT
 
 # Load model
-load("liquid_noH2O_thermometer.Rdata")
+load("liquid_noH2O_thermometer2.Rdata")
 
 # Run the model
-predT_liq <- predict(liquidT_noH2O_final, newdata = INPUT,allValues=TRUE)
+predT_liq <- predict(liquidT_noH2O_final, data = INPUT,predict.all = TRUE)
+predT_liq <- as.data.frame(predT_liq)
 
 # Calculating median and SD for temperature values (H2O-independent thermometer)
 Tliq_median <- round(apply(predT_liq, 1, median), digits = 0)
@@ -55,14 +53,15 @@ Tliq_sd
 
 #-----------------------------(3) LIQUID HYGROMETRY----------------------------#
 # Load model
-load("liquid_hygrometer.Rdata")
+load("liquid_hygrometer2.Rdata")
 
 # Adding T values to input dataframe for T-dependent hygrometer
 INPUTH2O <-cbind(INPUT,Tliq_median)
 INPUTH2O <- INPUTH2O %>% dplyr::rename(T = Tliq_median)
 
 # Run models
-predH2O_liq <- predict(liquidH2O_final, newdata = INPUTH2O, allValues=TRUE) 
+predH2O_liq <- predict(liquidH2O_final, data = INPUTH2O, predict.all = TRUE) 
+predH2O_liq <- as.data.frame(predH2O_liq)
 
 # Calculating median and SD for H2O content values (T-dependent hygrometer)
 H2Oliq_median <- round(apply(predH2O_liq, 1, median), 1)
@@ -90,7 +89,8 @@ INPUTH2O = select(INPUTH2O, -10)
 INPUTH2O <- na.omit(INPUTH2O)
 
 # Run model
-errorprop_predH2O_liq <- predict(liquidH2O_final, newdata = INPUTH2O, allValues=TRUE) 
+errorprop_predH2O_liq <- predict(liquidH2O_final, data = INPUTH2O, predict.all = TRUE) 
+errorprop_predH2O_liq <- as.data.frame(errorprop_predH2O_liq)
 
 # Calculating median and SD for H2O content values (T-dependent hygrometer)
 errorprop_H2Oliq_median <- round(apply(errorprop_predH2O_liq, 1, median), 1)
@@ -117,10 +117,11 @@ INPUTP = select(INPUTP, -10)
 INPUTP <- na.omit(INPUTP)
 
 # Load model
-load("liquid_barometer.Rdata")
+load("liquid_barometer2.Rdata")
 
 # Run model
-errorprop_predP_liq <- predict(liquidP_final, newdata = INPUTP, allValues=TRUE) 
+errorprop_predP_liq <- predict(liquidP_final, data = INPUTP, predict.all = TRUE) 
+errorprop_predP_liq <- as.data.frame(errorprop_predP_liq)
 
 # Calculating median and SD for P values
 errorprop_Pliq_median <- round(apply(errorprop_predP_liq, 1, median), 1)
@@ -155,6 +156,4 @@ filtered_OUTPUT2 <- OUTPUT2 %>% mutate (Tliq_median = replace(Tliq_median, Tliq_
 # Save filtered file
 write_xlsx(filtered_OUTPUT2,"eruption_errorprop_filtered.xlsx")
 
-
-#--------------------(6) 
 

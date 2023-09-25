@@ -1,13 +1,9 @@
 # Pressure-temperature-melt H2O content estimates + plagioclase equilibrium chemistry (anorthite content; An) 
-# Kyra Cutler: last updated 25/08/23 
+# Kyra Cutler: last updated 25/09/23 
 # Note: units are MPa for P, degrees Celsius for T, wt.% for H2O & mol % for An 
 
 #--------------------(1) R ENVIRONMENT + DATA INPUT PREP-----------------------#
-# Install packages if required (Note: ExtraTrees package is now archived) 
-url <- "https://cran.r-project.org/src/contrib/Archive/extraTrees/extraTrees_1.0.5.tar.gz"
-pkgFile <- "extraTrees_1.0.5.tar.gz"
-download.file(url = url, destfile = pkgFile)
-install.packages(pkgs=pkgFile, type="source", repos=NULL)
+# Install packages if required 
 install.packages("writexl")
 install.packages("readxl")
 install.packages("gdata")
@@ -15,9 +11,10 @@ install.packages("dplyr")
 install.packages("rstudioapi")
 install.packages("ggplot2")
 install.packages("ggpubr")
+install.packages("ranger")
 
 # Run required libraries for this script 
-library(extraTrees)
+library(ranger)
 library(writexl) 
 library(gdata)
 library(dplyr)
@@ -62,7 +59,7 @@ ggplot(calibration_data, aes(x=SiO2_liq, y=Al2O3_liq,colour=Data,shape=Data)) +
 
 #-------(2) PLAGIOCLASE SATURATION CHECK (if needed, otherwise skip step)------#
 # Load model
-load("plag_saturated?.Rdata")
+load("plag_saturated??.Rdata")
 
 # Isolating the model predictors
 dropcolumns <- c("Ref","Sample","H2O","T","Type")
@@ -70,17 +67,17 @@ INPUT = INPUT[,!(names(INPUT) %in% dropcolumns)]
 INPUT
 
 # Run the model
-plag_sat_check <- predict(plagsat_final, newdata = INPUT)
+plag_sat_check <- predict(plagsat_final, data = INPUT)
 plag_sat_check<-as.data.frame(plag_sat_check)
 
 # Creating output file 
 plag_saturated <-cbind(inputdata,plag_sat_check)
-filtered_plag_saturated <- plag_saturated%>% dplyr::filter(grepl('Yes', plag_sat_check))
+filtered_plag_saturated <- plag_saturated%>% dplyr::filter(grepl('Yes', prediction))
 write_xlsx(filtered_plag_saturated, 'OUTPUT_plagsat.xlsx') #replace input file name in step 1
 
 #----------------------------(3) AN CONTENT------------------------------------#
 # Load model
-load("An.Rdata")
+load("An2.Rdata")
 
 # Isolating the model predictors (if you used the plagioclase-saturated classifier, then you skip this step and run model)
 dropcolumns <- c("Ref","Sample","T","Type","plag_sat_check")
@@ -88,19 +85,20 @@ INPUT = INPUT[,!(names(INPUT) %in% dropcolumns)]
 INPUT
 
 # Run the model
-predAn <- predict(An_final, newdata = INPUT,allValues=TRUE)
+predAn <- predict(An_final, data = INPUT,predict.all = TRUE)
+predAn <- as.data.frame(predAn)
 
 # Calculating median and IQR for An contents for plagioclase values 
 An_median <- round(apply(predAn, 1, median), digits = 0)
-An_sd <-round(apply(predAn,1,sd),1)
+An_sd <-round(apply(predAn,1,sd),0)
 # Check values 
 An_median
 An_sd
 
 #------------------------------(4) THERMOMETRY---------------------------------#
 # Load models
-load("liquid_noH2O_thermometer.Rdata") # H2O-independent thermometer
-load("liquid_thermometer.Rdata") # H2O-dependent thermometer 
+load("liquid_noH2O_thermometer2.Rdata") # H2O-independent thermometer
+load("liquid_thermometer2.Rdata") # H2O-dependent thermometer 
 
 # If using H2O-dependent thermometer with an independent H2O estimate, add in H2O column to input dataframe
 dropcolumns <- c("Ref","Sample","T","Type","plag_sat_check")
@@ -108,8 +106,10 @@ INPUTwH2O = inputdata[,!(names(inputdata) %in% dropcolumns)]
 INPUTwH2O
 
 # Run models
-predT_liq <- predict(liquidT_noH2O_final, newdata = INPUT,allValues=TRUE)
-predTwH2O_liq <- predict(liquidT_final, newdata = INPUTwH2O,allValues=TRUE)
+predT_liq <- predict(liquidT_noH2O_final, data = INPUT, predict.all = TRUE)
+predT_liq <- as.data.frame(predT_liq)
+predTwH2O_liq <- predict(liquidT_final, data = INPUTwH2O,predict.all =TRUE)
+predTwH2O_liq <- as.data.frame(predTwH2O_liq)
 
 # Calculating median and SD for temperature values (H2O-independent thermometer)
 Tliq_median <- round(apply(predT_liq, 1, median), digits = 0)
@@ -131,8 +131,8 @@ INPUTH2O <-cbind(INPUT,Tliq_median)
 INPUTH2O <- INPUTH2O %>% dplyr::rename(T = Tliq_median)
 
 # Load models
-load("liquid_hygrometer.Rdata") # T-dependent hygrometer
-load("liquid_hygrometernoT.Rdata") # T-independent hygrometer 
+load("liquid_hygrometer2.Rdata") # T-dependent hygrometer
+load("liquid_hygrometernoT2.Rdata") # T-independent hygrometer 
 
 # If using T-dependent hygrometer with an independent T estimate, add in T column to input dataframe
 dropcolumns <- c("Ref","Sample","H2O","Type","plag_sat_check")
@@ -140,8 +140,10 @@ INPUTwT = inputdata[,!(names(inputdata) %in% dropcolumns)]
 INPUTwT
 
 # Run models (use either INPUTH2O or INPUTwT for 'newdata =')
-predH2O_liq <- predict(liquidH2O_final, newdata = INPUTH2O, allValues=TRUE) 
-predH2OnoT_liq <- predict(liquidH2OnT_final, newdata = INPUT, allValues=TRUE) 
+predH2O_liq <- predict(liquidH2O_final, data = INPUTH2O, predict.all = TRUE) 
+predH2O_liq <- as.data.frame(predH2O_liq)
+predH2OnoT_liq <- predict(liquidH2OnT_final, data = INPUT, predict.all = TRUE) 
+predH2OnoT_liq <- as.data.frame(predH2OnoT_liq)
 
 # Calculating median and SD for H2O content values (T-dependent hygrometer)
 H2Oliq_median <- round(apply(predH2O_liq, 1, median), 1)
@@ -163,12 +165,14 @@ INPUTP <-cbind(INPUT,H2Oliq_median)
 INPUTP <- INPUTP %>% dplyr::rename(H2O=H2Oliq_median)
 
 # Load models
-load("liquid_barometer.Rdata") # H2O-dependent barometer 
-load("liquid_barometernoH2O.Rdata") # H2O-independent barometer 
+load("liquid_barometer2.Rdata") # H2O-dependent barometer 
+load("liquid_barometernoH2O2.Rdata") # H2O-independent barometer 
 
 # Run models (if using H2O-dependent barometer with independent H2O estimate, swap INPUTP for INPUTwH2O for 'newdata =')
-predP_liq <- predict(liquidP_final, newdata = INPUTP, allValues=TRUE) 
-predPnw_liq <- predict(liquidPnoH2O_final, newdata = INPUT, allValues=TRUE) 
+predP_liq <- predict(liquidP_final, data = INPUTP, predict.all = TRUE) 
+predP_liq <- as.data.frame(predP_liq)
+predPnw_liq <- predict(liquidPnoH2O_final, data = INPUT, predict.all = TRUE) 
+predPnw_liq <- as.data.frame(predPnw_liq)
 
 # Calculating median and SD for P values (H2O-dependent barometer)
 Pliq_median <- round(apply(predP_liq, 1, median), 1)

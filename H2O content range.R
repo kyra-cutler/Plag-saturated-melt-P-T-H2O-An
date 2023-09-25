@@ -1,13 +1,9 @@
 # Using a range of H2O values for the H2O-dependent thermometer or barometer 
-# Kyra Cutler: last updated 25/08/23 
+# Kyra Cutler: last updated 25/09/23 
 # Note: units are MPa for P
 
 #--------------------(1) R ENVIRONMENT + DATA INPUT PREP-----------------------#
-# Install packages if required (Note: ExtraTrees package is now archived) 
-url <- "https://cran.r-project.org/src/contrib/Archive/extraTrees/extraTrees_1.0.5.tar.gz"
-pkgFile <- "extraTrees_1.0.5.tar.gz"
-download.file(url = url, destfile = pkgFile)
-install.packages(pkgs=pkgFile, type="source", repos=NULL)
+# Install packages if required 
 install.packages("writexl")
 install.packages("readxl")
 install.packages("gdata")
@@ -15,15 +11,16 @@ install.packages("dplyr")
 install.packages("rstudioapi")
 install.packages("ggplot2")
 install.packages("ggpubr")
+install.packages("ranger")
 
 # Run required libraries for this script 
-library(extraTrees)
 library(writexl) 
 library(gdata)
 library(dplyr)
 library(readxl)
 library(ggplot2)
 library(ggpubr)
+library(ranger)
 
 # Set file pathway and load input data
 setwd(paste(dirname(rstudioapi::getActiveDocumentContext()$path)))
@@ -35,7 +32,7 @@ INPUT <- as.data.frame (inputdata)
 head(INPUT)
 
 # Isolating the model predictors
-dropcolumns <- c("Ref","Sample","H2O","T","plag_sat_check","Type")
+dropcolumns <- c("Ref","Sample","H2O","T","prediction","Type")
 INPUT = inputdata[,!(names(inputdata) %in% dropcolumns)]
 INPUT
 
@@ -51,10 +48,11 @@ H2Orange_input1 <-cbind(H2Orange_input1,H2O)
 INPUT2 <-cbind(H2Orange_input,H2O)
 
 # Load model (if you want to just use the barometer, go to section 2)
-load("liquid_thermometer.Rdata") 
+load("liquid_thermometer2.Rdata") 
 
 # Run model
-predTwH2O_liq <- predict(liquidT_final, newdata = INPUT2,allValues=TRUE)
+predTwH2O_liq <- predict(liquidT_final, data = INPUT2, predict.all = TRUE)
+predTwH2O_liq <- as.data.frame(predTwH2O_liq)
 
 # Calculating median and SD for temperature values (H2O-dependent thermometer)
 TwH2Oliq_median <- round(apply(predTwH2O_liq, 1, median), digits = 0)
@@ -65,10 +63,11 @@ TwH2Oliq_sd
 
 #------------------------------(2) LIQUID BAROMETRY----------------------------#
 # Load model
-load("liquid_barometer.Rdata")
+load("liquid_barometer2.Rdata")
 
 # Run model
-predP_liq <- predict(liquidP_final, newdata = INPUT2, allValues=TRUE) 
+predP_liq <- predict(liquidP_final, data = INPUT2, predict.all = TRUE) 
+predP_liq <- as.data.frame(predP_liq)
 
 # Calculating median and SD for P values
 Pliq_median <- round(apply(predP_liq, 1, median), 1)
@@ -80,12 +79,12 @@ Pliq_sd
 #----------------------(3) FILTERING & SAVING ESTIMATES------------------------#
 # Save results from testing a range of water contents 
 OUTPUT3 <- cbind(H2Orange_input1, 
-                 #TwH2Oliq_median,TwH2Oliq_sd, 
+                 TwH2Oliq_median,TwH2Oliq_sd, 
                  Pliq_median,Pliq_sd)
-write_xlsx(OUTPUT3,"eruption_pressures_H2Orange.xlsx")
+write_xlsx(OUTPUT3,"eruption_PT_H2Orange.xlsx")
 
 # Set up filters (currently removes values above 75th percentile)
-#TwH2O_quantile <- quantile(TwH2Oliq_sd, c(0.75)) 
+TwH2O_quantile <- quantile(TwH2Oliq_sd, c(0.75)) 
 P_quantile <- quantile(Pliq_sd, c(0.75)) 
 
 # Filter estimates (take out # to include models or add in # to remove unused models)
@@ -105,6 +104,6 @@ filtered_OUTPUT3 <- OUTPUT3 %>% mutate(#An_median = replace(An_median, An_sd >= 
                                      Pliq_sd = replace(Pliq_sd, Pliq_sd >= P_quantile, NA))
                                  
 # Save filtered file
-write_xlsx(filtered_OUTPUT3,"eruption_pressures_H2Orange_filtered.xlsx")
+write_xlsx(filtered_OUTPUT3,"eruption_PT_H2Orange_filtered.xlsx")
 
 
