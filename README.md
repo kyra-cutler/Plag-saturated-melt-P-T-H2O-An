@@ -12,7 +12,7 @@ To get started:
 
 Filtering and saving estimates:
 
- All estimates will be saved as an Excel file (.xlsx). The file will contain the original input data + the calculated parameters (P-T-H2O-An). You can filter the P-T-H2O-An estimates by removing the highest standard deviation values (i.e., currently set up to remove values above the 75th quartile for the P-T-An models or above the 50th quartile for the H2O models; feel free to change).
+ All estimates will be saved as an Excel file (.xlsx). The file will contain the original input data + the calculated parameters (P-T-H2O-An). You can filter the P-T-H2O-An estimates by removing the estimates with the highest standard deviation values (i.e., currently set up to remove values above the 75th quartile for the P-T-An models or above the 50th quartile for the H2O models; feel free to change).
 
 Error propagation of T or H2O:
 
