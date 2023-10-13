@@ -18,7 +18,7 @@ Error propagation of T or H2O:
 
    If you want to propagate the temperature and water content errors when using the T-dependent hygrometer and H2O-dependent barometer, open up the ‘T and H2O error propagation.R’ script. Do not clear your global environment, as you can use the calculated temperature + water estimates and standard deviation values from the P_T_H2O_An.R script to simulate new T and H2O values.
 
-Testing a range of water contents:
+Testing a range of T/H2O contents:
 
    If you want to test using a range of water contents and temperatures with the H2O-dependent thermometer/barometer and T-dependent hygrometer, respectively, then open up the ‘T-H2O content range.R’ script. Again, do not clear your global environment, as you can combine the output from the ‘P_T_H2O_An.R’ script with the output from the ‘T-H2O content range.R’ script. 
 
