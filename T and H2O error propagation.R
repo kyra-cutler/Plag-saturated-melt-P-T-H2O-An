@@ -31,18 +31,18 @@ INPUT <- as.data.frame (inputdata)
 # Checks first rows of data 
 head(INPUT)
 
-#----------------------------(2) LIQUID THERMOMETRY----------------------------#
+#----------------------------(2) THERMOMETRY-----------------------------------#
 # Isolating the model predictors
-dropcolumns <- c("Ref","Sample","H2O","T","prediction","Type")
+dropcolumns <- c("Ref","Sample","H2O","T","plag_sat_check","Type")
 INPUT = inputdata[,!(names(inputdata) %in% dropcolumns)]
 INPUT
 
 # Load model
 load("liquid_noH2O_thermometer2.Rdata")
 
-# Run the model
+# Run the model (H2O-independent thermometer)
 predT_liq <- predict(liquidT_noH2O_final, data = INPUT,predict.all = TRUE)
-predT_liq <- as.data.frame(predT_liq)
+predT_liq <- predT_liq$predictions
 
 # Calculating median and SD for temperature values (H2O-independent thermometer)
 Tliq_median <- round(apply(predT_liq, 1, median), digits = 0)
@@ -51,7 +51,7 @@ Tliq_sd <-round(apply(predT_liq,1,sd),0)
 Tliq_median
 Tliq_sd
 
-#-----------------------------(3) LIQUID HYGROMETRY----------------------------#
+#-----------------------------(3) HYGROMETRY-----------------------------------#
 # Load model
 load("liquid_hygrometer2.Rdata")
 
@@ -61,7 +61,7 @@ INPUTH2O <- INPUTH2O %>% dplyr::rename(T = Tliq_median)
 
 # Run models
 predH2O_liq <- predict(liquidH2O_final, data = INPUTH2O, predict.all = TRUE) 
-predH2O_liq <- as.data.frame(predH2O_liq)
+predH2O_liq <- predH2O_liq$predictions
 
 # Calculating median and SD for H2O content values (T-dependent hygrometer)
 H2Oliq_median <- round(apply(predH2O_liq, 1, median), 1)
@@ -90,7 +90,7 @@ INPUTH2O <- na.omit(INPUTH2O)
 
 # Run model
 errorprop_predH2O_liq <- predict(liquidH2O_final, data = INPUTH2O, predict.all = TRUE) 
-errorprop_predH2O_liq <- as.data.frame(errorprop_predH2O_liq)
+errorprop_predH2O_liq <- errorprop_predH2O_liq$predictions
 
 # Calculating median and SD for H2O content values (T-dependent hygrometer)
 errorprop_H2Oliq_median <- round(apply(errorprop_predH2O_liq, 1, median), 1)
@@ -99,7 +99,7 @@ errorprop_H2Oliq_sd <-round(apply(errorprop_predH2O_liq,1,sd),1)
 errorprop_H2Oliq_median
 errorprop_H2Oliq_sd
 
-#------------------------------(4) LIQUID BAROMETRY----------------------------#
+#------------------------------(4) BAROMETRY-----------------------------------#
 # H2O error propagation, simulating H2O values 
 H2O_estimates<-cbind(errorprop_H2Oliq_median,errorprop_H2Oliq_sd)
 H2O_estimates<-as.data.frame(H2O_estimates)
@@ -121,7 +121,7 @@ load("liquid_barometer2.Rdata")
 
 # Run model
 errorprop_predP_liq <- predict(liquidP_final, data = INPUTP, predict.all = TRUE) 
-errorprop_predP_liq <- as.data.frame(errorprop_predP_liq)
+errorprop_predP_liq <- errorprop_predP_liq$predictions
 
 # Calculating median and SD for P values
 errorprop_Pliq_median <- round(apply(errorprop_predP_liq, 1, median), 1)
@@ -155,5 +155,6 @@ filtered_OUTPUT2 <- OUTPUT2 %>% mutate (Tliq_median = replace(Tliq_median, Tliq_
                                   
 # Save filtered file
 write_xlsx(filtered_OUTPUT2,"eruption_errorprop_filtered.xlsx")
+
 
 
