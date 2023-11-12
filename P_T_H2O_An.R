@@ -42,7 +42,7 @@ calibration_data <- rbind(calibration_data, INPUT_calibrationcheck)
 # TAS diagram comparison 
 ggplot(calibration_data, aes(x=SiO2_liq, y=Alkalis,colour=Data,shape=Data)) +
   geom_point(size=5, stroke=0.5)+
-  scale_colour_manual(values=c("#DEDEDE","#581E4F"))+
+  scale_colour_manual(values=c("#DEDEDE","#213A47"))+
   theme_pubr(border=TRUE)+
   xlab("SiO2 (wt.%)")+
   xlim(35, 80)+
@@ -53,7 +53,7 @@ ggplot(calibration_data, aes(x=SiO2_liq, y=Alkalis,colour=Data,shape=Data)) +
 # Change x and y axis to compare different oxides (SiO2_liq, TiO2,liq, Al2O3_liq, FeOt_liq, MgO_liq, CaO_liq,Na2O_liq, K2O_liq, Alkalis)
 ggplot(calibration_data, aes(x=SiO2_liq, y=Al2O3_liq,colour=Data,shape=Data)) +
   geom_point(size=5, stroke=0.5)+
-  scale_colour_manual(values=c("#DEDEDE","#581E4F"))+
+  scale_colour_manual(values=c("#DEDEDE","#213A47"))+
   theme_pubr(border=TRUE)+
   xlab("SiO2 (wt.%)")+
   ylab("Al2O3 (wt.%)")+
