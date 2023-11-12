@@ -28,7 +28,7 @@ Filtering and saving estimates:
 
 Any questions, please email: kyra.cutler@stx.ox.ac.uk
 
-![supplementary 6 ](https://github.com/kyra-cutler/Plag-saturated-melt-P-T-H2O-An/assets/75129991/9a91f489-9d56-4d2f-b30f-c45821100a18)
 
+![supplementary 6](https://github.com/kyra-cutler/Plag-saturated-melt-P-T-H2O-An/assets/75129991/0ce28829-2797-4e5a-9c59-91c4aef94322)
 
 
