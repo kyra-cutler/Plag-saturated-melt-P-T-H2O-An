@@ -35,7 +35,7 @@ head(INPUT)
 calibration_data <- read_excel("Supplementary Table 1_calibration dataset_P-T-H2O-An.xlsx", sheet = "Input for T, H2O & An")
 Alkalis <- INPUT$Na2O_liq + INPUT$K2O_liq 
 INPUT_calibrationcheck <- cbind(INPUT,Alkalis,Data="new_data")
-calibration_data <- calibration_data[ -c(11:24)]
+calibration_data <- calibration_data[ -c(11:24,27:29)]
 INPUT_calibrationcheck <- INPUT_calibrationcheck[ -c(3,12,13)]
 calibration_data <- rbind(calibration_data, INPUT_calibrationcheck)
 
@@ -44,10 +44,10 @@ ggplot(calibration_data, aes(x=SiO2_liq, y=Alkalis,colour=Data,shape=Data)) +
   geom_point(size=5, stroke=0.5)+
   scale_colour_manual(values=c("#DEDEDE","#213A47"))+
   theme_pubr(border=TRUE)+
-  xlab("SiO2 (wt.%)")+
+  xlab(bquote(SiO[2]~"(wt.%)"))+
   xlim(35, 80)+
   ylim(0,15)+
-  ylab("Na2O + K2O (wt.%)")+
+  ylab(bquote(Na[2]*"O"~+~K[2]*"O"~"(wt.%)"))+
   theme(legend.position="bottom")
 
 # Change x and y axis to compare different oxides (SiO2_liq, TiO2,liq, Al2O3_liq, FeOt_liq, MgO_liq, CaO_liq,Na2O_liq, K2O_liq, Alkalis)
@@ -55,8 +55,8 @@ ggplot(calibration_data, aes(x=SiO2_liq, y=Al2O3_liq,colour=Data,shape=Data)) +
   geom_point(size=5, stroke=0.5)+
   scale_colour_manual(values=c("#DEDEDE","#213A47"))+
   theme_pubr(border=TRUE)+
-  xlab("SiO2 (wt.%)")+
-  ylab("Al2O3 (wt.%)")+
+  xlab(bquote(SiO[2]~"(wt.%)"))+
+  ylab(bquote(Al[2]*O[3]~"(wt.%)"))+
   theme(legend.position="bottom")
 
 #-------(2) PLAGIOCLASE SATURATION CHECK (if needed, otherwise skip step)------#
@@ -145,7 +145,7 @@ dropcolumns <- c("Ref","Sample","H2O","Type","plag_sat_check")
 INPUTwT = inputdata[,!(names(inputdata) %in% dropcolumns)]
 INPUTwT
 
-# Run models (T-dependent hygrometer; use either INPUTH2O or INPUTwT for 'newdata =')
+# Run models (T-dependent hygrometer; use either INPUTH2O or INPUTwT for 'data =')
 predH2O_liq <- predict(liquidH2O_final, data = INPUTH2O, predict.all = TRUE) 
 predH2O_liq <- predH2O_liq$predictions
 
@@ -176,7 +176,7 @@ load("liquid_barometernoH2O2.Rdata") # H2O-independent barometer
 INPUTP <-cbind(INPUT,H2Oliq_median)
 INPUTP <- INPUTP %>% dplyr::rename(H2O=H2Oliq_median)
 
-# Run models (H2O-dependent barometer; if using with independent H2O estimate, swap INPUTP for INPUTwH2O for 'newdata =')
+# Run models (H2O-dependent barometer; if using with independent H2O estimate, swap INPUTP for INPUTwH2O for 'data =')
 predP_liq <- predict(liquidP_final, data = INPUTP, predict.all = TRUE) 
 predP_liq <- predP_liq$predictions
 
