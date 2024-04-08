@@ -1,6 +1,6 @@
 # Plagioclase-saturated melt hygrothermobarometry and plagioclase-melt equilibria using machine learning 
 
-These R scripts allow users to assess plagioclase-melt equilibrium and obtain estimates of last-equilibrated conditions (P-T-H2O-An) using plagioclase-saturated liquids. Users must have R (https://www.r-project.org/) and R studio (https://www.rstudio.com/products/rstudio/; at least version 4.3.1) installed to run the code, as well as have a version of Excel that can open .xlsx files. 
+These R scripts allow users to assess plagioclase-melt equilibrium and obtain estimates of last-equilibrated conditions (P-T-H2O) using plagioclase-saturated liquids. Users must have R (https://www.r-project.org/) and R studio (https://www.rstudio.com/products/rstudio/; at least version 4.3.1) installed to run the code, as well as have a version of Excel that can open .xlsx files. 
 
 To get started:
 1.	Click on the green code button and download the zip file. Do not remove or delete any files within this folder. 
