@@ -85,7 +85,7 @@ T_errorprop_input <- INPUT %>% slice(rep(1:n(), each = 50))
 stacking <-stack(T_montecarlo_values)
 T_errorprop_input <-cbindX(T_errorprop_input,stacking)
 INPUTH2O <- T_errorprop_input %>% dplyr::rename(T = values)
-INPUTH2O = select(INPUTH2O, -10)
+INPUTH2O = subset(INPUTH2O, select = -c(10))
 INPUTH2O <- na.omit(INPUTH2O)
 
 # Run model
@@ -113,7 +113,7 @@ H2O_errorprop_input <- INPUT %>% slice(rep(1:n(), each = 50))
 stacking2 <-stack(H2O_montecarlo_values)
 H2O_errorprop_input <-cbindX(H2O_errorprop_input,stacking2)
 INPUTP <- H2O_errorprop_input %>% dplyr::rename(H2O = values)
-INPUTP = select(INPUTP, -10)
+INPUTP = subset(INPUTP, select = -c(10))
 INPUTP <- na.omit(INPUTP)
 
 # Load model
